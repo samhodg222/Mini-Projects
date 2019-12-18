@@ -39,7 +39,6 @@ public class Light{
 			if(b == 0) continue;
 			
 			double r = a / b;
-			System.out.println(r);
 			if(Math.abs(r) > 1) continue;
 			//if(r < 0) continue; //travels away from plane
 			

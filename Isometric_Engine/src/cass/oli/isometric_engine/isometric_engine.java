@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -165,7 +164,6 @@ public class isometric_engine {
 		
 	public static void render_stl(String fileName){
 		String content = "";
-		System.out.println(Paths.get(".").toAbsolutePath().normalize().toString());
 		try{
 			
 			Scanner scan = new Scanner(new File("src/stl/" + fileName));
