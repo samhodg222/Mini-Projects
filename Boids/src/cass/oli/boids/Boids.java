@@ -15,7 +15,7 @@ public class Boids extends Game{
 	public ArrayList<Boid> boids = new ArrayList<>();
 	
 	
-	private final int num_boids = 75;
+	private final int num_boids = 30;
 	
 	public Vec target = null;
 	private long target_timeout;
