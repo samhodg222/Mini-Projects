@@ -5,5 +5,7 @@ public class Planet {
 	public float radius, mass;
 	public boolean stationairy = false;
 	
-	public Planet(float x, float y, float radius, float mass)
+	public Planet(float x, float y, float radius, float mass) {
+		
+	}
 }
