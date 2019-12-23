@@ -86,11 +86,12 @@ public class Launcher extends Canvas implements Runnable {
 	public void run() {
 		running = true;
 		game.paused = false;
+		long lastTime = System.nanoTime();
 		while (running) {
-			long lastTime = System.nanoTime();
-
+			long delta = System.nanoTime() - lastTime;
+			lastTime = System.nanoTime();
 			if (!game.paused)
-				game.tick();
+				game.tick((float) delta/1000000000);
 			render();
 
 			long tick_time = (lastTime - System.nanoTime() + OPTIMAL_TIME) / 1000000;

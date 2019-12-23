@@ -37,7 +37,7 @@ public abstract class Game {
 
 	public abstract void dragTo(int x, int y);
 
-	protected abstract void tick();
+	protected abstract void tick(float time);
 
 	protected abstract void render(Graphics2D g);
 }

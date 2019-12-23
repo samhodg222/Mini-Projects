@@ -213,7 +213,7 @@ public class Mandelbrot extends Game {
 	}
 
 	@Override
-	protected void tick() {
+	protected void tick(float delta) {
 		long timeSinceLastRender = System.currentTimeMillis() - lastRender;
 		if(timeSinceLastRender > 500 && !improving && current_max <= absolute_max) {
 			improve = new Thread() {

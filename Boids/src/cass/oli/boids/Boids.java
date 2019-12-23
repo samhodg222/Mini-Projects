@@ -21,11 +21,12 @@ public class Boids extends Game{
 	private long target_timeout;
 	
 	public Boids() {
+		name = "Boids";
 		for(int i = 0; i < num_boids; i++) boids.add(new Boid(this));
 	}
 	
 	@Override
-	protected void tick() {
+	protected void tick(float delta) {
 		for(Boid boid : boids) boid.tick();
 		if(target != null & (System.currentTimeMillis() - target_timeout) > 2000) target = null;
 	}

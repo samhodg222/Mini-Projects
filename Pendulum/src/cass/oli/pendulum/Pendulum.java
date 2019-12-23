@@ -1,4 +1,4 @@
-package cass.oli.orbit;
+package cass.oli.pendulum;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -7,12 +7,18 @@ import java.util.ArrayList;
 import cass.oli.simulation.Game;
 import cass.oli.simulation.Launcher;
 
-public class Orbit extends Game{
-	ArrayList<Planet> planets = new ArrayList<Planet>();
-	int id = 0;
+public class Pendulum extends Game{
 	
-	public Orbit() {
-		name = "Orbit";
+	public static float g = (float) 35;
+	
+	ArrayList<Node> nodes = new ArrayList<Node>();
+	
+	private long lastTime;
+	
+	public Pendulum() {
+		name = "Pendulum";
+		nodes.add(new Node(100, 100, false));
+		lastTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -23,24 +29,25 @@ public class Orbit extends Game{
 
 	@Override
 	public void leftClick(int x, int y) {
-		planets.add(new Planet(id, this, x, y));
-		id++;
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void rightClick(int x, int y) {
-		planets.add(new Planet(id, this, x, y, true));
-		id++;
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public void dragTo(int x, int y) {
-		leftClick(x, y);
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void tick(float delta) {
-		for(Planet planet : planets) planet.tick(delta);
+		for(Node node : nodes) node.tick(delta);
 	}
 
 	@Override
@@ -49,10 +56,10 @@ public class Orbit extends Game{
 		g.setColor(Color.black);
 		g.fillRect(0, 0, width, height);
 		
-		for(Planet planet : planets) planet.render(g);
+		for(Node node : nodes) node.render(g);
 	}
 	
 	public static void main(String[] args) {
-		new Launcher(new Orbit());
+		new Launcher(new Pendulum());
 	}
 }

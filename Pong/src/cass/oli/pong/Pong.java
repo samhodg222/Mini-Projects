@@ -69,7 +69,7 @@ public class Pong extends Game{
 		}
 	}
 	
-	public void tick() {
+	public void tick(float delta) {
 		float timeLeft = 1.0f;
 		
 		//Synchronises adding and removing objects
