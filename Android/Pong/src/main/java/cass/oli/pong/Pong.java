@@ -40,7 +40,7 @@ public class Pong extends SurfaceView implements SurfaceHolder.Callback {
         paint.setStyle(Paint.Style.FILL);
         paint.setAntiAlias(true);
 
-        paint.setTextSize(72);
+        paint.setTextSize(getWidth()/10);
     }
 
     public void update(){
