@@ -21,6 +21,9 @@ public class Pong extends Game{
 	private int objID = 0;
 	private final int spriteRatio = 10;
 	
+	public boolean meta = false; //TODO
+	//http://jamie-wong.com/2014/08/19/metaballs-and-marching-squares/
+	
 	public Pong() {
 		name = "Pong";
 		box = new BoxContainer(0, 0, width, height);
@@ -36,7 +39,7 @@ public class Pong extends Game{
 			return;
 		}
 		if(paused) {
-			int nButtons = 1;
+			int nButtons = 2;
 			int spriteWidth = (int) Math.round(width / spriteRatio); 
 			int offset = (int) Math.round((height - spriteWidth * nButtons)/(nButtons+1));
 			
@@ -45,6 +48,12 @@ public class Pong extends Game{
 					y > offset && y < offset + spriteWidth) {
 				removeObjects.addAll(objects);
 				paused = false;
+				return;
+			}
+			//Meta
+			if(x > (width - spriteWidth)/2 && x < (width + spriteWidth)/2 &&
+					y > 2*offset && y < 2*offset + spriteWidth) {
+				meta = !meta;
 				return;
 			}
 		}else {
@@ -158,11 +167,13 @@ public class Pong extends Game{
 			g.fillRect(0, 0, width, height);
 			g.setColor(Color.white);
 			
-			int nButtons = 1;
+			int nButtons = 2;
 			int spriteWidth = (int) Math.round(width / spriteRatio); 
 			int offset = (int) Math.round((height - spriteWidth * nButtons)/(nButtons+1));
 			
 			g.drawImage(sprites[0], (width - spriteWidth)/2, offset, spriteWidth, spriteWidth, null);
+			if(meta) g.drawImage(sprites[2], (width - spriteWidth)/2, 2*offset, spriteWidth, spriteWidth, null);
+			else g.drawImage(sprites[1], (width - spriteWidth)/2, 2*offset, spriteWidth, spriteWidth, null);
 			
 			int[] xTri = {width- 60, width - 10, width - 60};
 			int[] yTri = {10, 40, 70};
@@ -204,9 +215,11 @@ public class Pong extends Game{
 	
 	@Override
 	protected void loadImages() throws Exception{
-		sprites = new BufferedImage[1];
+		sprites = new BufferedImage[3];
 		try {
 			sprites[0] = ImageIO.read(getClass().getResource("/res/Reload.png"));
+			sprites[1] = ImageIO.read(getClass().getResource("/res/Solid.png"));
+			sprites[2] = ImageIO.read(getClass().getResource("/res/Meta.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
