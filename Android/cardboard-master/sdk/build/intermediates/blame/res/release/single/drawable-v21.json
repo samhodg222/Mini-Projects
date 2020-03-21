@@ -1,0 +1,42 @@
+[
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\avd_hide_password.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable-v21\\avd_hide_password.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\abc_list_divider_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable-v21\\abc_list_divider_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\design_bottom_navigation_item_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable-v21\\design_bottom_navigation_item_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\avd_show_password.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable-v21\\avd_show_password.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\abc_dialog_material_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable-v21\\abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\notification_action_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\5b1059cfc8a68cb48db63fd3b2d74907\\res\\drawable-v21\\notification_action_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable-v21\\design_password_eye.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable-v21\\design_password_eye.xml"
+    }
+]

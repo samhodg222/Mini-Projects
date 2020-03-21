@@ -1,0 +1,119 @@
+ html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	border: 0;
+	overflow: hidden; /*  Disable scrollbars */
+	display: block;  /* No floating content on sides */
+	background-color: #000;
+}
+
+.full{
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+#canvasContainer {
+	padding-left: 0;
+	padding-right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5%;
+	display: block;
+	overflow: hidden;
+	width: 90vw;
+	height: 80vh;
+	max-width: 80vh;
+	background-color: #fff;
+}
+
+#canvas{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+}
+
+#buttons{
+	width: 100vw;
+	height: 20vh;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.button{
+	background-color: #fff;
+	width: 80vw;
+	height: 10vh;
+	margin: 2vh 2vw;
+	display: inline-block;
+	font-size: 4vh;
+}
+
+.content{
+	background-color: white;
+	display: block;
+    overflow: auto;
+	margin: 5vh auto;
+	width: 90vw;
+	height: 90vh;
+	text-align: center;
+}
+
+h1{/*Alright for now*/
+	font-size: 10vh;
+}
+
+#roomCodeForm{
+	margin: 0 10%;
+}
+
+#roomCodeForm input{
+	font-size: 6vh;
+}
+
+.homeForm{
+	text-align: left;
+	margin: 2vh;
+	font-size: 6vh;
+}
+
+.homeForm input{
+	width: 100%;
+	font-size: 6vh;
+}
+
+#createRoom{
+	margin: 5vh auto;
+	width: 80%;
+	background-color: blue;
+	font-size: 6vh;
+}
+
+h2{
+	font-size: 12vh;
+	margin: 3vh 3vw;
+}
+
+#lobby{
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 60vh;
+}
+
+.player{
+	display: block;
+	font-size: 6vh;
+	background-color: #ff0000;
+	margin: 2vh;
+}
+
+#readyButton{
+	margin: 2vh auto;
+	width: 80%;
+	background-color: blue;
+	font-size: 6vh;
+}

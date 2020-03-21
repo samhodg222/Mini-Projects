@@ -1,0 +1,238 @@
+[
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_dark_normal.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_dark_normal.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\mtrl_snackbar_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\mtrl_snackbar_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_btn_radio_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_btn_radio_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_light_normal.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_light_normal.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_disabled.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_disabled.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_ab_back_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_ab_back_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_text_cursor_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_text_cursor_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\ic_mtrl_chip_checked_circle.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\ic_mtrl_chip_checked_circle.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_dark_focused.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_dark_focused.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\ic_mtrl_chip_close_circle.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\ic_mtrl_chip_close_circle.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_seekbar_tick_mark_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_seekbar_tick_mark_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_clear_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_clear_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_light_normal.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_light_normal.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\notification_tile_bg.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\5b1059cfc8a68cb48db63fd3b2d74907\\res\\drawable\\notification_tile_bg.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_dark_focused.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_dark_focused.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\design_snackbar_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\design_snackbar_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_btn_default_mtrl_shape.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_btn_default_mtrl_shape.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_spinner_textfield_background_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_spinner_textfield_background_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_list_selector_background_transition_holo_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_list_selector_background_transition_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_dark_normal.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_dark_normal.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\5b1059cfc8a68cb48db63fd3b2d74907\\res\\drawable\\notification_bg.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_voice_search_api_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_voice_search_api_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\notification_bg_low.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\5b1059cfc8a68cb48db63fd3b2d74907\\res\\drawable\\notification_bg_low.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_vector_test.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_vector_test.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_tab_indicator_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_tab_indicator_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\navigation_empty_icon.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\navigation_empty_icon.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_disabled.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_disabled.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_list_selector_holo_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_list_selector_holo_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\tooltip_frame_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\tooltip_frame_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\notification_icon_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\5b1059cfc8a68cb48db63fd3b2d74907\\res\\drawable\\notification_icon_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_item_background_holo_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_item_background_holo_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_list_selector_holo_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_list_selector_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_btn_borderless_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_btn_borderless_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\tooltip_frame_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\tooltip_frame_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_item_background_holo_dark.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_item_background_holo_dark.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_arrow_drop_right_black_24dp.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_switch_thumb_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_switch_thumb_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\ic_mtrl_chip_checked_black.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\ic_mtrl_chip_checked_black.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_seekbar_track_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_seekbar_track_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_textfield_search_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_textfield_search_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\design_fab_background.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\design_fab_background.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_text_light_focused.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_text_light_focused.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ratingbar_small_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ratingbar_small_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_list_selector_background_transition_holo_light.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_list_selector_background_transition_holo_light.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ratingbar_indicator_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ratingbar_indicator_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_go_search_api_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_go_search_api_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_cab_background_top_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_cab_background_top_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\mtrl_tabs_default_indicator.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\44d54caf3e798f8ac4828df1064a7d08\\res\\drawable\\mtrl_tabs_default_indicator.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_cab_background_internal_bg.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_cab_background_internal_bg.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ratingbar_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ratingbar_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_search_api_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_search_api_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_btn_check_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_btn_check_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\common_google_signin_btn_icon_light_focused.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\98dc88cdfd6b3f77c98be5f0f7fc8ed0\\res\\drawable\\common_google_signin_btn_icon_light_focused.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_seekbar_thumb_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_seekbar_thumb_material.xml"
+    },
+    {
+        "merged": "D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\sdk\\build\\intermediates\\res\\merged\\release\\drawable\\abc_ic_menu_overflow_material.xml",
+        "source": "C:\\Users\\olica\\.gradle\\caches\\transforms-2\\files-2.1\\aa27669f82f8e37c27e746e86b6497a4\\res\\drawable\\abc_ic_menu_overflow_material.xml"
+    }
+]

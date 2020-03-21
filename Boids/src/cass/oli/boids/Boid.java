@@ -51,8 +51,8 @@ public class Boid {
 		
 		rule1.mult(2.5f);
 		rule2.mult(1.5f);
-		rule3.mult(1.3f);
-		rule4.mult(1.5f);
+		rule3.mult(3f);
+		rule4.mult(4.5f);
 		
 		acc.add(rule1);		
 		acc.add(rule2);		

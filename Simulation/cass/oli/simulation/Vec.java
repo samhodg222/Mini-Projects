@@ -27,6 +27,10 @@ public class Vec {
 		this.x *= factor;
 		this.y *= factor;
 	}
+	
+	public Vec mult1(float factor) {
+		return new Vec(this.x * factor, this.y * factor);
+	}
 
 	public void divide(double factor) {
 		this.x /= factor;

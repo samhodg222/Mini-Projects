@@ -1,0 +1,53 @@
+
+{
+	"buildFiles" : 
+	[
+		"D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"C:\\Users\\olica\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\hellocardboard-android\\.cxx\\cmake\\debug\\arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cc" ],
+	"libraries" : 
+	{
+		"cardboard_jni-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "cardboard_jni",
+			"buildCommand" : "C:\\Users\\olica\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\GitHub\\Mini-Projects\\Android\\cardboard-master\\hellocardboard-android\\.cxx\\cmake\\debug\\arm64-v8a --target cardboard_jni",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android21 --gcc-toolchain=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dcardboard_jni_EXPORTS -I..\\..\\..\\..\\libraries  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/src/main/jni/hello_cardboard_app.cc",
+					"workingDirectory" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/debug/arm64-v8a"
+				},
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android21 --gcc-toolchain=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dcardboard_jni_EXPORTS -I..\\..\\..\\..\\libraries  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/src/main/jni/hello_cardboard_jni.cc",
+					"workingDirectory" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/debug/arm64-v8a"
+				},
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android21 --gcc-toolchain=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dcardboard_jni_EXPORTS -I..\\..\\..\\..\\libraries  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=gnu++11 -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/src/main/jni/util.cc",
+					"workingDirectory" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/debug/arm64-v8a"
+				}
+			],
+			"output" : "D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/build/intermediates/cmake/debug/obj/arm64-v8a/libcardboard_jni.so",
+			"toolchain" : "4147305033"
+		}
+	},
+	"toolchains" : 
+	{
+		"4147305033" : 
+		{
+			"cCompilerExecutable" : "C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "C:/Users/olica/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en_GB">
+	<head>
+		<title>Chinese Paintings</title>
+		
+		<link rel="stylesheet" type="text/css" href="styles.css">
+	</head>
+	<body>
+		<div id="home" class="full">
+			<div id="roomCode" class="content">
+				<h1>Chinese Paintings</h1>
+				<form id="roomCodeForm"onsubmit="submitRoomCode(); return false;">
+					<div class="homeForm">
+						Room Code<br>
+						<input id="room_code" type="text" placeholder="Enter Room Code"/>
+					</div>
+					<div class="homeForm">
+						Name<br>
+						<input id="name" type="text" placeholder="Enter Name"/>
+					</div>
+					<input type="submit" value="Play!"/>
+				</form>
+				
+				<div id="createRoom" onclick="createRoom()">
+					Create Room
+				</div>
+			</div>
+		</div>
+		
+		<div id="lobbyScreen" class="full" style="display: none">
+			<div id="lobbyContent" class="content">
+				<h2 id="ROOMCODE"></h2>
+				<div id="lobby"></div>
+				<div id="readyButton" onclick="readyButtonPress()">
+					Ready
+				</div>
+			</div>
+		</div>
+		
+		<div id="play" class="full" style="display: none;">
+			<div id="canvasContainer">
+				<canvas id="canvas">Your Browser Does Not Support HTML5. Please Upgrade.</canvas>
+			</div>
+			
+			<div id="buttons">
+				<div id="canvasText" class="button">Button A</div>
+			</div>
+		</div>
+		
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="index.js"></script>
+	</body>
+</html>
