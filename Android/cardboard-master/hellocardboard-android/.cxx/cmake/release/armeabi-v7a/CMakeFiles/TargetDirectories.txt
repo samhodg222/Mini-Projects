@@ -1,3 +1,0 @@
-D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/release/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/release/armeabi-v7a/CMakeFiles/cardboard_jni.dir
-D:/GitHub/Mini-Projects/Android/cardboard-master/hellocardboard-android/.cxx/cmake/release/armeabi-v7a/CMakeFiles/edit_cache.dir
