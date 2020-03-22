@@ -28,7 +28,7 @@ canvas.addEventListener('touchstart', onMouseDown, false);
 canvas.addEventListener('touchend', onMouseUp, false);
 canvas.addEventListener('touchcancel', onMouseUp, false);
 canvas.addEventListener('touchmove', throttle(onMouseMove, 1), false);
-window.addEventListener('touchend', function(e){ drawing = false; }, false);
+//window.addEventListener('touchend', function(e){ drawing = false; }, false);
 
 function drawLine(x0, y0, x1, y1, color){
 	ctx.beginPath();
@@ -55,10 +55,14 @@ function onMouseEnter(e){
 }
 
 function onMouseUp(e){
-	mouse = getMousePos(canvas, e);
 	if(!drawable || !drawing) return false;
-	drawing = false;
-	drawLine(current.x, current.y, mouse.x, mouse.y, current.color);
+	try{
+		mouse = getMousePos(canvas, e);
+		drawing = false;
+		drawLine(current.x, current.y, mouse.x, mouse.y, current.color);
+	}catch{
+		drawing = false;
+	}
 }
 
 function onMouseOut(e){
@@ -94,8 +98,8 @@ function  getMousePos(canvas, evt) {
 	scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
 
 	return {
-		x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-		y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+		x: ((evt.clientX||evt.touches[0].clientX) - rect.left) * scaleX,   // scale mouse coordinates after they have
+		y: ((evt.clientY||evt.touches[0].clientY)  - rect.top) * scaleY     // been adjusted to be relative to element
 	}
 }
 
@@ -164,6 +168,31 @@ function startTimer(time){
 		}
 		timerEle.innerHTML = Math.round(timeOnClock/1000);
 	}, 1000);
+}
+
+function drawImage(img){
+	var img_asp = img.width / img.height;
+	var canvas_asp = canvas.width / canvas.height;
+	var width, height, x, y;
+	
+	if(img_asp < canvas_asp){
+		height = canvas.height;
+		width = img.width * (height / img.height);
+		x = (canvas.width - width) / 2;
+		y = 0;
+	}else if(img_asp > canvas_asp){
+		width = canvas.width;
+		height = img.height * (width / img.width);
+		x = 0;
+		y = (canvas.height - height) / 2;
+	}else{
+		width = canvas.width;
+		height = canvas.height;
+		x = 0;
+		y = 0;
+	}
+	
+	ctx.drawImage(img, x, y, width, height);
 }
 
 
@@ -239,7 +268,7 @@ socket.on('drawing', function(drawing, player_name){
 	var img = new Image();
 	img.src = drawing;
 	img.onload = function(){
-		ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //Need to consider aspect ratios and dimensions, should be based around center
+		drawImage(img);
 	}
 	startTimer(VIEW_TIME);
 });
@@ -248,13 +277,32 @@ socket.on("stopLooking", function(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-socket.on('final_drawing', function(drawing){
-	var img = new Image();
-	img.src = drawing;
-	img.onload = function(){
-		ctx.drawImage(img, 0, 0); //Need to consider aspect ratios and dimensions, should be based around center
+socket.on('final_drawings', function(drawings, task){
+	//drawings.reverse(); //show in reverse order
+	var imgs = [];
+	for(var i = 0; i < drawings.length; i++){
+		imgs[i] = new Image();
+		imgs[i].src = drawings[i].art;
 	}
-	document.getElementById("canvasText").innerHTML = "The Final Result!";
+		
+	//Assume last image in array is last to load (bad, improve later)
+	imgs[imgs.length - 1].onload = function(){
+		//Display all images
+		var img = 0;
+		drawImage(imgs[img]);
+		document.getElementById("canvasText").innerHTML = drawings[img].artist + "'s Art!";
+		var display_timer = setInterval(function(){
+			img++;
+			if(img >= imgs.length) {
+				clearInterval(display_timer);
+				document.getElementById("canvasText").innerHTML = "The original drawing was meant to be: " + task;
+				return;
+			}
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawImage(imgs[img]);
+			document.getElementById("canvasText").innerHTML = drawings[img].artist + "'s Art!";
+		}, VIEW_TIME);
+	}
 });
 
 socket.on("log", function(message){

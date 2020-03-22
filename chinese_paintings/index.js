@@ -1,19 +1,24 @@
 /*
 TODO
+	Update Flow Chart
+
 	Bug Fixing:
-		-find bugs first...
+		-find bugs
 		
 	Features:
-		-Have better system than using alerts
-		-Live stream to previous users
-		-show all paintings at end and reveal task
-		-general css and presentation improvement
-		-replay room
 		-more drawings
 		-more colors
+		-Have better system than using alerts & prompt
+		-general css and presentation improvement
+		
+		-Live stream to previous users
+		-add guessing along the way (use for label, better than 'Art')
+		
 		
 	Extra Features:
 		-Fix room generation to avoid overproduction of rooms
+		-replay room (maybe, no problem if just refresh for now)
+		-compress images (or not even have them in image form?)
 */
 
 
@@ -81,7 +86,6 @@ function removePlayer(room, player){
 		Players cannot properly leave once joined, their connection just becomes inactive until they relogin in
 		potentially timeout players
 	*/
-	roomCode = generateRoomCode(room);
 	rooms[room].players[player].connected = false;
 }
 
@@ -142,12 +146,31 @@ function continueRoom(room){
 	}, DRAW_TIME);	
 }
 
+function startRoomTimeout(room){ //necessary until replay possible
+	if(rooms[room] == undefined) return;
+	if(rooms[room].state != "end") return;
+	setTimeout(function(){
+		if(rooms[room].state == "end") deleteRoom(room);
+	}, 15*1000);
+}
+
 function startEmptyRoomTimeout(room){ //if a lobby is empty for more than 30 seconds delete
 	if(rooms[room] == undefined) return;
 	if(getRoomSize(room) > 0) return;
 	setTimeout(function(){
-		if(getRoomSize(room) < 1) delete rooms[room];
-	}, 3*1000);
+		if(getRoomSize(room) < 1) {
+			deleteRoom(room);
+		}
+	}, 30*1000);
+}
+
+function deleteRoom(room){
+	var roomCode = generateRoomCode(room);
+	io.of('/').in(roomCode).clients((error, socketIds) => {
+		if (error) throw error;
+		socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(roomCode));
+	});
+	delete rooms[room];
 }
 
 function getRoomSize(room){
@@ -161,6 +184,7 @@ function getRoomSize(room){
 
 
 //Recieved Sockets
+
 io.on('connection', function(socket){
 	socket.on('newRoom', function(name){
 		//check name
@@ -175,8 +199,6 @@ io.on('connection', function(socket){
 		socket.join(roomCode);
 		
 		io.to(socket.id).emit("successful_connection", roomCode, [name], [false], name);
-		
-		//console.log(JSON.stringify(rooms));
 	});
 	
 	socket.on('joinRoom', function(roomCode, name){
@@ -237,7 +259,7 @@ io.on('connection', function(socket){
 	socket.on('finishedDrawing', function(drawing){
 		var [room, player] = findPlayerFromID(socket.id);
 		
-		rooms[room].drawings.push(drawing);
+		rooms[room].drawings.push({artist: rooms[room].players[player].name, art: drawing});
 		
 		var next = 1;
 		
@@ -257,7 +279,8 @@ io.on('connection', function(socket){
 			}, VIEW_TIME);
 		}else{
 			rooms[room].state = "end";
-			io.to(generateRoomCode(room)).emit("final_drawing", rooms[room].drawings.pop());
+			startRoomTimeout(room);
+			io.to(generateRoomCode(room)).emit("final_drawings", rooms[room].drawings, rooms[room].drawing);
 		}
 	});
 });
@@ -267,11 +290,14 @@ io.on('connection', function(socket){
 	
 	socket.on('disconnect', function(){
 		for(var i = 0; i < rooms.length; i++){
-			if(rooms[i] == undefined || rooms[i] == null || rooms[i].players == undefined) continue;
+			if(rooms[i] == undefined) continue;
 			for(var j = 0; j < rooms[i].players.length; j++){
-				if(rooms[i].players[j].id === socket.id) removePlayer(i, j);
-				if(getRoomSize(i) < 1) startEmptyRoomTimeout(i);
-				break;
+				if(rooms[i].players[j].id === socket.id) {
+					removePlayer(i, j);
+					if(getRoomSize(i) < 1) startEmptyRoomTimeout(i);
+					break;
+				}
+				
 			}
 		}
 	});
@@ -292,4 +318,13 @@ app.get("/styles.css", function(req, res){
 });
 app.get("/index.js", function(req, res){
 	res.sendFile(__dirname + "/web/index.js");
+});
+
+
+/*
+	****IMPORTANT****
+	REMOVE WHEN FINISHED
+*/
+app.get("/print", function(req, res){
+	res.send(rooms);
 });
