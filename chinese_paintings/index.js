@@ -1,20 +1,15 @@
 /*
 TODO
 	Bug Fixing:
-		-Duplicate Name
-		-Allow re log on without error
-		-etc.
+		-find bugs first...
 		
 	Features:
-		-Room code generator
+		-Have better system than using alerts
 		-Live stream to previous users
 		-show all paintings at end and reveal task
 		-general css and presentation improvement
-		-Auto capitalise the form
-		-room deletion after no users for cetain period of time
 		-replay room
 		-more drawings
-		-timer on client side
 		-more colors
 		
 	Extra Features:
@@ -28,39 +23,52 @@ var io = require("socket.io")(http);
 
 const PORT = 3000;
 
-var blank_room = {
-	players: [],
-	queue: [],
-	drawings: [],
-	drawing: "null",
-	state: "lobby"
-}
-
 var rooms = [];
-const MAX_LOBBIES = 26*26*26*26; //456976
+const MAX_LOBBIES = 26*26*26*26; //456976 (limited by number of room codes, most likely limited by server capabilities)
 const DRAW_TIME = 10*1000; //10 seconds to draw
 const VIEW_TIME =  3*1000; //3 seconds to view
+
 
 //Functions
 
 function createRoom(){
 	for(var i = 0; i < MAX_LOBBIES; i++){
-		if(rooms[i] == null){
-			rooms[i] = blank_room;
-			rooms[i].drawing = randomDrawing();
+		if(rooms[i] == undefined){
+			rooms[i] = {
+				players: [],
+				queue: [],
+				drawings: [],
+				drawing: randomDrawing(),
+				state: "lobby"
+			};
 			return i;
 		}
 	}
+	return -1;
 }
 
 function generateRoomCode(index){
-	//function that returns characters from index. (i.e. 0 would return AAAA, 1 would return AAAB, etc)
-	return "AAAA";
+	//Generates a 4 letter code based off the room index
+	if(index < 0) return false;
+	var room_26 = [0, 0, 0, 0];
+	var index_26 = index.toString(26).split("");
+	var offset = room_26.length - index_26.length;
+	for(var i = 0; i < index_26.length; i++) room_26[i + offset] = parseInt(index_26[i], 26);
+	var room_code = [];
+	for(var i = 0; i < room_26.length; i++) room_code.push(alphabet[room_26[i]]);
+	return room_code.join("");
 }
 
 function reverseRoomCode(roomCode){
 	//returns an index based of the room code
-	return 0;
+	var room_code = roomCode.split("");
+	var total = 0;
+	for(var i = 0; i < room_code.length; i++) {
+		var num = alphabet.indexOf(room_code[i]);
+		if(num < 0) return -1;
+		total += num * Math.pow(26, room_code.length - 1 - i);
+	}
+	return total;
 }
 
 function randomDrawing(){
@@ -69,29 +77,27 @@ function randomDrawing(){
 }
 
 function removePlayer(room, player){
-	if(rooms[room].state != "lobby") return false; //only remove player if in lobby mode (need to add option for reconnection (different socket.id)
-	
+	/*
+		Players cannot properly leave once joined, their connection just becomes inactive until they relogin in
+		potentially timeout players
+	*/
 	roomCode = generateRoomCode(room);
-
-	io.to(roomCode).emit("log", rooms[room].players[player].name + " Has Disconnected!");
-	io.to(roomCode).emit("removePlayer", rooms[room].players[player].name);
-	
-	if (player > -1) {
-	  rooms[room].players.splice(player, 1);
-	}
+	rooms[room].players[player].connected = false;
 }
 
 function findPlayerFromID(id){ //returns in form [room, player]
-	for(i = 0; i < rooms.length; i++){
-		for(j = 0; j < rooms[i].players.length; j++){
+	for(var i = 0; i < rooms.length; i++){
+		if(rooms[i] == undefined) continue;
+		for(var j = 0; j < rooms[i].players.length; j++){
 			if(rooms[i].players[j].id == id) return [i, j];
 		}
 	}
-	return false;
+	return [-1, -1];
 }
 
 function checkReady(room){
-	for(i = 0; i < rooms[room].players.length; i++){
+	if(rooms[room].players.length < 2) return false; //Need at least 2 players to start game
+	for(var i = 0; i < rooms[room].players.length; i++){
 		if(!rooms[room].players[i].ready) return false;
 	}
 	return true;
@@ -110,7 +116,7 @@ function startRoom(room){
 	rooms[room].state = 0;
 	player = rooms[room].queue[rooms[room].state]
 	
-	io.to(generateRoomCode(room)).emit("draw", player);
+	io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
 	io.to(rooms[room].players[player].id).emit("drawingTask", rooms[room].drawing);
 	
 	setTimeout(function(){
@@ -130,71 +136,121 @@ function continueRoom(room){
 	
 	player = rooms[room].queue[rooms[room].state]
 	
-	io.to(generateRoomCode(room)).emit("draw", player);
+	io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
 	setTimeout(function(){
 		io.to(rooms[room].players[player].id).emit("requestDrawing");
 	}, DRAW_TIME);	
-	
+}
+
+function startEmptyRoomTimeout(room){ //if a lobby is empty for more than 30 seconds delete
+	if(rooms[room] == undefined) return;
+	if(getRoomSize(room) > 0) return;
+	setTimeout(function(){
+		if(getRoomSize(room) < 1) delete rooms[room];
+	}, 3*1000);
+}
+
+function getRoomSize(room){
+	if(rooms[room] == undefined) return -1;
+	var numActivePlayers = 0;
+	for(var i = 0; i < rooms[room].players.length; i++){
+		if(rooms[room].players[i].connected) numActivePlayers++;
+	}
+	return numActivePlayers;
 }
 
 
 //Recieved Sockets
 io.on('connection', function(socket){
 	socket.on('newRoom', function(name){
-		var room = createRoom();
-		var roomCode = generateRoomCode(room);
-		rooms[room].players.push({name: name, id: socket.id, ready: false});
-		socket.join(roomCode);
-		
-		var player_names = [];
-		for(i = 0; i < rooms[room].players.length; i++){
-			player_names.push(rooms[room].players[i].name);
+		//check name
+		if(!/^[A-Z]+$/g.test(name) || name.length < 1 || name.length > 12) {
+			io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
+			return;
 		}
 		
-		io.to(roomCode).emit("log", "Room Created!");
-		io.to(socket.id).emit("successful_connection", roomCode, player_names, [false], rooms[room].players.length-1);
+		var room = createRoom(); //TODO add support for too many rooms
+		var roomCode = generateRoomCode(room);
+		rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
+		socket.join(roomCode);
+		
+		io.to(socket.id).emit("successful_connection", roomCode, [name], [false], name);
+		
+		//console.log(JSON.stringify(rooms));
 	});
 	
 	socket.on('joinRoom', function(roomCode, name){
 		var room = reverseRoomCode(roomCode);
-		rooms[room].players.push({name: name, id: socket.id, ready: false});
+		
+		//check if room exists
+		if(roomCode.length != 4 || !/^[A-Z]+$/g.test(roomCode) || room == -1 || rooms[room] == undefined){
+			io.to(socket.id).emit("unsuccessful_connection", "not_exist");
+			return;
+		}
+		
+		//check name
+		if(!/^[A-Z]+$/g.test(name) || name.length < 1 || name.length > 12) {
+			io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
+			return;
+		}
+		
+		var relogin = false;
+		for(var i = 0; i < rooms[room].players.length; i++){
+			if(rooms[room].players[i].name == name && rooms[room].players[i].connected){
+				io.to(socket.id).emit("unsuccessful_connection", "name_taken");
+				return;
+			}else if(rooms[room].players[i].name == name && !rooms[room].players[i].connected){
+				rooms[room].players[i].connected = true;
+				rooms[room].players[i].id = socket.id;
+				relogin = true;
+				break;
+			}
+		}
+		
+		if(!relogin) rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
 		socket.join(roomCode);
 				
 		var player_names = [];
-		for(i = 0; i < rooms[room].players.length; i++){
-			player_names.push(rooms[room].players[i].name);
-		}
-		
 		var readys = [];
-		for(i = 0; i < rooms[room].players.length; i++){
+		for(var i = 0; i < rooms[room].players.length; i++){
+			player_names.push(rooms[room].players[i].name);
 			readys.push(rooms[room].players[i].ready);
 		}
 		
-		io.to(socket.id).emit("successful_connection", roomCode, player_names, readys, rooms[room].players.length-1);
+		io.to(socket.id).emit("successful_connection", roomCode, player_names, readys, name);
 		
-		socket.broadcast.to(roomCode).emit("log", name + " Has Connected!");
 		socket.broadcast.to(roomCode).emit("addPlayer", name);
 	});
 	
 	socket.on('ready', function(ready){
-		[room, player] = findPlayerFromID(socket.id);
+		 var [room, player] = findPlayerFromID(socket.id);
+		 
+		 if(room < 0 || player < 0) return; //no need to tell client, possibly reset client side?
+		 
 		rooms[room].players[player].ready = ready;
 
-		io.to(generateRoomCode(room)).emit("ready", player, ready);
+		io.to(generateRoomCode(room)).emit("ready", rooms[room].players[player].name, ready);
 		
 		if(checkReady(room)) startRoom(room);
 	});
 	
 	socket.on('finishedDrawing', function(drawing){
-		[room, player] = findPlayerFromID(socket.id);
+		var [room, player] = findPlayerFromID(socket.id);
 		
 		rooms[room].drawings.push(drawing);
 		
-		if(rooms[room].state + 1 < rooms[room].players.length){
+		var next = 1;
 		
-			var nextPlayer = rooms[room].queue[rooms[room].state + 1];
+		while(rooms[room].state + next < rooms[room].players.length){
+			if(rooms[room].players[rooms[room].queue[rooms[room].state + next]].connected) break;
+			next++;
+		}
+		
+		if(rooms[room].state + next < rooms[room].players.length){
+		
+			var nextPlayer = rooms[room].queue[rooms[room].state + next];
 						
-			io.to(rooms[room].players[nextPlayer].id).emit("drawing", drawing, player);
+			io.to(rooms[room].players[nextPlayer].id).emit("drawing", drawing, rooms[room].players[player].name);
 			setTimeout(function(){
 				io.to(rooms[room].players[nextPlayer].id).emit("stopLooking");
 				continueRoom(room);
@@ -210,13 +266,18 @@ io.on('connection', function(socket){
 	//console.log('a user connected');
 	
 	socket.on('disconnect', function(){
-		for(i = 0; i < rooms.length; i++){
-			for(j = 0; j < rooms[i].players.length; j++){
+		for(var i = 0; i < rooms.length; i++){
+			if(rooms[i] == undefined || rooms[i] == null || rooms[i].players == undefined) continue;
+			for(var j = 0; j < rooms[i].players.length; j++){
 				if(rooms[i].players[j].id === socket.id) removePlayer(i, j);
+				if(getRoomSize(i) < 1) startEmptyRoomTimeout(i);
+				break;
 			}
 		}
 	});
 });
+
+var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 //HTTP set up
 http.listen(PORT, function(){

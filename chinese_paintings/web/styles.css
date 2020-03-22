@@ -40,23 +40,41 @@
 #buttons{
 	width: 100vw;
 	height: 20vh;
-	margin: 0 auto;
+	margin: 2vh auto;
 	text-align: center;
 }
 
 .button{
 	background-color: #fff;
-	width: 80vw;
 	height: 10vh;
-	margin: 2vh 2vw;
+	min-width: 10vh;
+	margin: auto;
 	display: inline-block;
+	font-size: 8vh;
+}
+
+#timer{
+	float: right;
+	margin-right: 4vw;
+}
+
+#canvasTextHolder{
+	width: calc( 80vw - 10vh );
+	min-width: 70vw;
+}
+
+#canvasText{
 	font-size: 4vh;
+    margin-block-start: auto;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
 }
 
 .content{
 	background-color: white;
 	display: block;
-    overflow: auto;
+    overflow: none;
 	margin: 5vh auto;
 	width: 90vw;
 	height: 90vh;

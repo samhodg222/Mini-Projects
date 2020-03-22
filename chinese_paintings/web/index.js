@@ -1,6 +1,9 @@
 //index.js
 //client side javascript
 
+const DRAW_TIME = 10*1000; //10 seconds to draw
+const VIEW_TIME =  3*1000; //3 seconds to view
+
 var socket = io();
 
 var canvas = document.getElementById("canvas");
@@ -111,11 +114,18 @@ var players = [];
 var readys = [];
 
 function createRoom(){
-	socket.emit("newRoom", prompt("Name:"));
+	socket.emit("newRoom", prompt("Name:").toUpperCase());
 }
 
 function submitRoomCode(){
-	socket.emit("joinRoom", document.getElementById("room_code").value, document.getElementById("name").value);
+	var room_code = document.getElementById("room_code").value.toUpperCase();
+	var name = document.getElementById("name").value.toUpperCase();
+	
+	if(room_code.length != 4) { alert("Incorrect Room Code"); return; }	
+	if(name.length < 1) { alert("Please Enter a Name"); return;}
+	//other checks probably needed
+	
+	socket.emit("joinRoom", room_code, name);
 }
 
 function readyButtonPress(){
@@ -140,6 +150,22 @@ function updateLobby(){
 }
 
 
+var timer;
+function startTimer(time){
+	clearInterval(timer);
+	var timeOnClock = time;
+	var timerEle = document.getElementById("timer");
+	timerEle.innerHTML = Math.round(timeOnClock/1000);
+	timer = setInterval(function(){
+		timeOnClock -= 1000;
+		if(timeOnClock <= 0) {
+			timeOnClock = 0;
+			clearInterval(timer);
+		}
+		timerEle.innerHTML = Math.round(timeOnClock/1000);
+	}, 1000);
+}
+
 
 socket.on("successful_connection", function(roomCode_, players_, readys_, me_){
 	me = me_;
@@ -152,6 +178,10 @@ socket.on("successful_connection", function(roomCode_, players_, readys_, me_){
 	
 	document.getElementById("home").style = "display: none";
 	document.getElementById("lobbyScreen").style = "display: initial";
+});
+
+socket.on("unsuccessful_connection", function(e){
+	alert(e);
 });
 
 socket.on("addPlayer", function(name){
@@ -167,7 +197,9 @@ socket.on("removePlayer", function(name){
 	updateLobby();
 });
 
-socket.on("ready", function(player, ready_){
+socket.on("ready", function(player_name, ready_){
+	var player = players.indexOf(player_name);
+	if(player < 0) return false;
 	readys[player] = ready_;
 	updateLobby();
 });
@@ -182,11 +214,15 @@ socket.on("drawingTask", function(task){
 	document.getElementById("canvasText").innerHTML = "You Are Drawing A:" + task;
 });
 
-socket.on("draw", function(player){
-	if(player == me) {
+socket.on("draw", function(player_name){
+	var player = players.indexOf(player_name);
+	if(player < 0) return false;
+	if(player_name == me) {
 		document.getElementById("canvasText").innerHTML = "Try to replicate what you saw!";
 		drawable = true;
-	}else document.getElementById("canvasText").innerHTML = players[player] + " is Drawing!";
+	}else document.getElementById("canvasText").innerHTML = player_name + " is Drawing!";
+	
+	startTimer(DRAW_TIME);
 });
 
 socket.on('requestDrawing', function(){
@@ -196,13 +232,16 @@ socket.on('requestDrawing', function(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-socket.on('drawing', function(drawing, player){
+socket.on('drawing', function(drawing, player_name){
+	var player = players.indexOf(player_name);
+	if(player < 0) return false;
 	document.getElementById("canvasText").innerHTML = players[player] + "'s Drawing!";
 	var img = new Image();
 	img.src = drawing;
 	img.onload = function(){
 		ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //Need to consider aspect ratios and dimensions, should be based around center
 	}
+	startTimer(VIEW_TIME);
 });
 
 socket.on("stopLooking", function(){

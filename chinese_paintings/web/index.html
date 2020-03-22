@@ -12,11 +12,11 @@
 				<form id="roomCodeForm"onsubmit="submitRoomCode(); return false;">
 					<div class="homeForm">
 						Room Code<br>
-						<input id="room_code" type="text" placeholder="Enter Room Code"/>
+						<input id="room_code" style="text-transform: uppercase;" maxlength="4" type="text" placeholder="Enter Room Code"/>
 					</div>
 					<div class="homeForm">
 						Name<br>
-						<input id="name" type="text" placeholder="Enter Name"/>
+						<input id="name" style="text-transform: uppercase;" maxlength="12"  type="text" placeholder="Enter Name"/>
 					</div>
 					<input type="submit" value="Play!"/>
 				</form>
@@ -43,7 +43,8 @@
 			</div>
 			
 			<div id="buttons">
-				<div id="canvasText" class="button">Button A</div>
+				<div id="canvasTextHolder" class="button"><p id="canvasText">Button A</p></div>
+				<div id="timer" class="button">10</div>
 			</div>
 		</div>
 		
