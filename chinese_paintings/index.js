@@ -1,23 +1,30 @@
 /*
 TODO
-	Update Flow Chart
-
 	Bug Fixing:
 		-find bugs
 		
 	Features:
+		*General*
 		-more drawings
-		-more colors
-		-Have better system than using alerts & prompt
-		-general css and presentation improvement
-		
-		-Live stream to previous users
-		-add guessing along the way (use for label, better than 'Art')
-		
+			potentially 'scene action person' thing, maybe a mix
+			will definitelybe a csv online with a free list, will
+			have to make csv import (not too much work)	
+			
+		*Big Changes*
+			-Live stream to previous users *ALMOST THERE* (potentially don't worry about scaling, or don't be lazy)
+				pretty simple to do, just figuring out who can see it
+				also design something for players that have nothing to see.
+				
+			-add guessing along the way (use for label, better than 'Art') *NOT SURE ABOUT THIS*
+				Implemented to some extend but not sure if good feature
 		
 	Extra Features:
 		-Fix room generation to avoid overproduction of rooms
+			simply more options, and maybe some ddos protection, or at
+			least stop one client or ip(if poss) making multiple rooms
 		-replay room (maybe, no problem if just refresh for now)
+			possibly not necessary, depends how long games end up being, 
+			and if it makes sense
 		-compress images (or not even have them in image form?)
 */
 
@@ -33,9 +40,13 @@ const MAX_LOBBIES = 26*26*26*26; //456976 (limited by number of room codes, most
 const DRAW_TIME = 10*1000; //10 seconds to draw
 const VIEW_TIME =  3*1000; //3 seconds to view
 
-
 //Functions
+function randomDrawing(){//TODO
+	//function that returns random drawing task
+	return "banana";
+}
 
+//Room Management
 function createRoom(){
 	for(var i = 0; i < MAX_LOBBIES; i++){
 		if(rooms[i] == undefined){
@@ -52,6 +63,170 @@ function createRoom(){
 	return -1;
 }
 
+function newRoom(name, socket){ //**NEEDS WORK**
+	//check name
+	if(check_name(name)) {
+		io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
+		return;
+	}
+	
+	var room = createRoom(); //TODO add support for too many rooms
+	var roomCode = generateRoomCode(room);
+	rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
+	socket.join(roomCode);
+	
+	io.to(socket.id).emit("successful_connection", roomCode, [name], [false], name);
+}
+
+function joinRoom(roomCode, name, socket){
+	var room = reverseRoomCode(roomCode);
+		
+	//check if room exists
+	if(roomCode.length != 4 || !/^[A-Z]+$/g.test(roomCode) || room == -1 || rooms[room] == undefined){
+		io.to(socket.id).emit("unsuccessful_connection", "not_exist");
+		return;
+	}
+	
+	//check if room is in lobby mode
+	if(rooms[room].state != "lobby"){
+		io.to(socket.id).emit("unsuccessful_connection", "game_in_play");
+		return;
+	}
+	
+	//check name
+	if(check_name(name)) {
+		io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
+		return;
+	}
+	
+	var relogin = false;
+	for(var i = 0; i < rooms[room].players.length; i++){
+		if(rooms[room].players[i].name == name && rooms[room].players[i].connected){
+			io.to(socket.id).emit("unsuccessful_connection", "name_taken");
+			return;
+		}else if(rooms[room].players[i].name == name && !rooms[room].players[i].connected){
+			rooms[room].players[i].connected = true;
+			rooms[room].players[i].id = socket.id;
+			relogin = true;
+			break;
+		}
+	}
+	
+	if(!relogin) rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
+	socket.join(roomCode);
+			
+	var player_names = [];
+	var readys = [];
+	for(var i = 0; i < rooms[room].players.length; i++){
+		player_names.push(rooms[room].players[i].name);
+		readys.push(rooms[room].players[i].ready);
+	}
+	
+	io.to(socket.id).emit("successful_connection", roomCode, player_names, readys, name);
+	
+	socket.broadcast.to(roomCode).emit("addPlayer", name);
+}
+
+function findPlayerFromID(id){ //returns in form [room, player]
+	for(var i = 0; i < rooms.length; i++){
+		if(rooms[i] == undefined) continue;
+		for(var j = 0; j < rooms[i].players.length; j++){
+			if(rooms[i].players[j].id == id) return [i, j];
+		}
+	}
+	return [-1, -1];
+}
+
+function removePlayer(room, player){
+	/*
+		Players cannot properly leave once joined, their connection just becomes inactive until they relogin in
+		potentially timeout players
+		
+		TODO allow players to join and leave when in lobby mode (look out for errors on client side)
+	*/
+	rooms[room].players[player].connected = false;
+}
+
+
+//GAMEPLAY
+//START
+function startRoom(room){
+	//generate random order of play
+	while(rooms[room].queue.length < rooms[room].players.length){
+		var r = Math.floor(Math.random() * rooms[room].players.length);
+		if(rooms[room].queue.indexOf(r) === -1) rooms[room].queue.push(r);
+	}
+	
+	io.to(generateRoomCode(room)).emit("start");
+	
+	
+	rooms[room].state = 0;
+	player = rooms[room].queue[rooms[room].state]
+	
+	setTimeout(function(){
+		io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
+		io.to(rooms[room].players[player].id).emit("drawingTask", rooms[room].drawing);
+		
+		setTimeout(function(){
+			io.to(rooms[room].players[player].id).emit("requestDrawing");
+			addRequest(rooms[room].players[player].id, 'drawing', function(){
+				finishedDrawing(room, player, null) //send black image in case of no return
+			});
+		}, DRAW_TIME);
+	}, 4*1000);
+}
+
+//RECIEVE REQUEST [A] => if request not recieved just submit nothing;
+function finishedDrawing(room, player, drawing){
+	//Add drawing database
+	rooms[room].drawings.push({artist: rooms[room].players[player].name, art: drawing});
+		
+	//find next active player *CODE MIGHT NEED CHECKING*
+	var next = 1;
+	while(rooms[room].state + next < rooms[room].players.length){
+		if(rooms[room].players[rooms[room].queue[rooms[room].state + next]].connected) break;
+		next++;
+	}
+	
+	//Check if there is another player
+	if(rooms[room].state + next < rooms[room].players.length){
+		//Send previous drawing to next active player in queue	
+		var nextPlayer = rooms[room].queue[rooms[room].state + next];
+					
+		io.to(rooms[room].players[nextPlayer].id).emit("drawing", drawing, rooms[room].players[player].name);
+		setTimeout(function(){
+			//after VIEW_TIME clear clients canvas
+			io.to(rooms[room].players[nextPlayer].id).emit("stopLooking");
+			continueRoom(room);
+		}, VIEW_TIME);
+	}else{
+		//Finished Game
+		rooms[room].state = "end";
+		startRoomTimeout(room);
+		io.to(generateRoomCode(room)).emit("final_drawings", rooms[room].drawings, rooms[room].drawing);
+	}
+}
+
+function continueRoom(room){
+	if(!Number.isInteger(rooms[room].state)) return false; //Shouldn't be needed
+	
+	rooms[room].state++; //set next player to current
+	
+	if(rooms[room].state >= rooms[room].players.length) return false; //Shouldn't be needed
+	
+	var player = rooms[room].queue[rooms[room].state];
+	
+	io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
+	setTimeout(function(){
+		//MAKE REQUEST [A]
+		io.to(rooms[room].players[player].id).emit("requestDrawing");
+		addRequest(rooms[room].players[player].id, 'drawing', function(){
+			finishedDrawing(room, player, null)
+		});
+	}, DRAW_TIME);	
+}
+
+//ROOM functions
 function generateRoomCode(index){
 	//Generates a 4 letter code based off the room index
 	if(index < 0) return false;
@@ -76,76 +251,25 @@ function reverseRoomCode(roomCode){
 	return total;
 }
 
-function randomDrawing(){
-	//function that returns random drawing task
-	return "banana";
-}
-
-function removePlayer(room, player){
-	/*
-		Players cannot properly leave once joined, their connection just becomes inactive until they relogin in
-		potentially timeout players
-	*/
-	rooms[room].players[player].connected = false;
-}
-
-function findPlayerFromID(id){ //returns in form [room, player]
-	for(var i = 0; i < rooms.length; i++){
-		if(rooms[i] == undefined) continue;
-		for(var j = 0; j < rooms[i].players.length; j++){
-			if(rooms[i].players[j].id == id) return [i, j];
-		}
-	}
-	return [-1, -1];
-}
-
 function checkReady(room){
-	if(rooms[room].players.length < 2) return false; //Need at least 2 players to start game
+	if(getRoomSize(room) < 2) return false; //Need at least 2 active players to start game
 	for(var i = 0; i < rooms[room].players.length; i++){
+		if(!rooms[room].players[i].connected) continue; //Non-active players aren't counted
 		if(!rooms[room].players[i].ready) return false;
 	}
 	return true;
 }
 
-function startRoom(room){
-	//generate random order of play
-	while(rooms[room].queue.length < rooms[room].players.length){
-		var r = Math.floor(Math.random() * rooms[room].players.length);
-		if(rooms[room].queue.indexOf(r) === -1) rooms[room].queue.push(r);
+function getRoomSize(room){
+	if(rooms[room] == undefined) return -1;
+	var numActivePlayers = 0;
+	for(var i = 0; i < rooms[room].players.length; i++){
+		if(rooms[room].players[i].connected) numActivePlayers++;
 	}
-	
-	io.to(generateRoomCode(room)).emit("start");
-	
-	
-	rooms[room].state = 0;
-	player = rooms[room].queue[rooms[room].state]
-	
-	io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
-	io.to(rooms[room].players[player].id).emit("drawingTask", rooms[room].drawing);
-	
-	setTimeout(function(){
-		io.to(rooms[room].players[player].id).emit("requestDrawing");
-	}, DRAW_TIME);
+	return numActivePlayers;
 }
 
-function continueRoom(room){
-	if(!Number.isInteger(rooms[room].state)) return false;
-	
-	rooms[room].state++;
-	
-	if(rooms[room].state >= rooms[room].players.length) { //Might not be necessary
-		endRoom(); //TODO
-		return;
-	}
-	
-	player = rooms[room].queue[rooms[room].state]
-	
-	io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
-	setTimeout(function(){
-		io.to(rooms[room].players[player].id).emit("requestDrawing");
-	}, DRAW_TIME);	
-}
-
+//END ROOM functions
 function startRoomTimeout(room){ //necessary until replay possible
 	if(rooms[room] == undefined) return;
 	if(rooms[room].state != "end") return;
@@ -173,81 +297,58 @@ function deleteRoom(room){
 	delete rooms[room];
 }
 
-function getRoomSize(room){
-	if(rooms[room] == undefined) return -1;
-	var numActivePlayers = 0;
-	for(var i = 0; i < rooms[room].players.length; i++){
-		if(rooms[room].players[i].connected) numActivePlayers++;
+//Game Management
+
+//Request Management
+var requests = [];
+const MAX_REQUESTS = 100000; //arbitrary number
+const REQUEST_TIME = 1000; //gives player 1 second to return a request
+function addRequest(id, title, no_feedback){ //function in event of no return
+	var request_id;
+	
+	for(request_id = 0; request_id < MAX_REQUESTS; request_id++){
+		if(requests[request_id] == undefined){
+			requests[request_id] = {id: id, title: title};
+			break;
+		}
 	}
-	return numActivePlayers;
+	
+	setTimeout(function(){
+		if(requests[request_id] != undefined) {
+			no_feedback;
+			delete requests[request_id];
+		}
+	}, REQUEST_TIME);
+	
+	return request_id;
+}
+
+function clearRequest(id, title){
+	for(var i = 0; i < requests.length; i++){
+		if(requests[i].id === id && requests[i].title === title){
+			delete requests[i];
+			break;
+		}
+	}
+}
+
+//Name Check
+function check_name(name){ //returns true if name isn't right (sorry)
+	return (!/^[A-Z]+$/g.test(name) || name.length < 1 || name.length > 12);
 }
 
 
 //Recieved Sockets
 
 io.on('connection', function(socket){
-	socket.on('newRoom', function(name){
-		//check name
-		if(!/^[A-Z]+$/g.test(name) || name.length < 1 || name.length > 12) {
-			io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
-			return;
-		}
-		
-		var room = createRoom(); //TODO add support for too many rooms
-		var roomCode = generateRoomCode(room);
-		rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
-		socket.join(roomCode);
-		
-		io.to(socket.id).emit("successful_connection", roomCode, [name], [false], name);
-	});
+	socket.on('newRoom', function(name){ newRoom(name, socket); });
 	
-	socket.on('joinRoom', function(roomCode, name){
-		var room = reverseRoomCode(roomCode);
-		
-		//check if room exists
-		if(roomCode.length != 4 || !/^[A-Z]+$/g.test(roomCode) || room == -1 || rooms[room] == undefined){
-			io.to(socket.id).emit("unsuccessful_connection", "not_exist");
-			return;
-		}
-		
-		//check name
-		if(!/^[A-Z]+$/g.test(name) || name.length < 1 || name.length > 12) {
-			io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
-			return;
-		}
-		
-		var relogin = false;
-		for(var i = 0; i < rooms[room].players.length; i++){
-			if(rooms[room].players[i].name == name && rooms[room].players[i].connected){
-				io.to(socket.id).emit("unsuccessful_connection", "name_taken");
-				return;
-			}else if(rooms[room].players[i].name == name && !rooms[room].players[i].connected){
-				rooms[room].players[i].connected = true;
-				rooms[room].players[i].id = socket.id;
-				relogin = true;
-				break;
-			}
-		}
-		
-		if(!relogin) rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
-		socket.join(roomCode);
-				
-		var player_names = [];
-		var readys = [];
-		for(var i = 0; i < rooms[room].players.length; i++){
-			player_names.push(rooms[room].players[i].name);
-			readys.push(rooms[room].players[i].ready);
-		}
-		
-		io.to(socket.id).emit("successful_connection", roomCode, player_names, readys, name);
-		
-		socket.broadcast.to(roomCode).emit("addPlayer", name);
-	});
+	socket.on('joinRoom', function(roomCode, name){	joinRoom(roomCode, name, socket); });
 	
 	socket.on('ready', function(ready){
-		 var [room, player] = findPlayerFromID(socket.id);
+		var [room, player] = findPlayerFromID(socket.id);
 		 
-		 if(room < 0 || player < 0) return; //no need to tell client, possibly reset client side?
+		if(room < 0 || player < 0) return; //no need to tell client, possibly reset client side?
 		 
 		rooms[room].players[player].ready = ready;
 
@@ -256,32 +357,26 @@ io.on('connection', function(socket){
 		if(checkReady(room)) startRoom(room);
 	});
 	
+	socket.on('line', function(width, height, x0, y0, x1, y1, color){
+		var [room, player] = findPlayerFromID(socket.id);
+		if(room < 0 || player < 0) return;
+		
+		if(!Number.isInteger(rooms[room].state)) return false;
+		
+		for(var i = 0; i < rooms[room].state; i++){
+			var player_ = rooms[room].queue[i];
+			io.to(rooms[room].players[player_].id).emit("line", width, height, x0, y0, x1, y1, color);
+		}
+	});
+	
 	socket.on('finishedDrawing', function(drawing){
 		var [room, player] = findPlayerFromID(socket.id);
 		
-		rooms[room].drawings.push({artist: rooms[room].players[player].name, art: drawing});
+		if(room < 0 || player < 0) return false; //possibly tell client
 		
-		var next = 1;
+		clearRequest(socket.id, 'drawing'); //clear request
 		
-		while(rooms[room].state + next < rooms[room].players.length){
-			if(rooms[room].players[rooms[room].queue[rooms[room].state + next]].connected) break;
-			next++;
-		}
-		
-		if(rooms[room].state + next < rooms[room].players.length){
-		
-			var nextPlayer = rooms[room].queue[rooms[room].state + next];
-						
-			io.to(rooms[room].players[nextPlayer].id).emit("drawing", drawing, rooms[room].players[player].name);
-			setTimeout(function(){
-				io.to(rooms[room].players[nextPlayer].id).emit("stopLooking");
-				continueRoom(room);
-			}, VIEW_TIME);
-		}else{
-			rooms[room].state = "end";
-			startRoomTimeout(room);
-			io.to(generateRoomCode(room)).emit("final_drawings", rooms[room].drawings, rooms[room].drawing);
-		}
+		finishedDrawing(room, player, drawing);
 	});
 });
 
@@ -306,7 +401,7 @@ io.on('connection', function(socket){
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 //HTTP set up
-http.listen(PORT, function(){
+http.listen(PORT, '192.168.0.16', function(){
 	console.log("listening on *:" + PORT);
 });
 
@@ -318,6 +413,10 @@ app.get("/styles.css", function(req, res){
 });
 app.get("/index.js", function(req, res){
 	res.sendFile(__dirname + "/web/index.js");
+});
+
+app.get("/jquery-3.4.1.min.js", function(req, res){
+	res.sendFile(__dirname + "/web/jquery-3.4.1.min.js");
 });
 
 

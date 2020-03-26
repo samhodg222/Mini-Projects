@@ -4,51 +4,101 @@
 		<title>Chinese Paintings</title>
 		
 		<link rel="stylesheet" type="text/css" href="styles.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	</head>
 	<body>
+		<div id="background"></div>
 		<div id="home" class="full">
 			<div id="roomCode" class="content">
 				<h1>Chinese Paintings</h1>
-				<form id="roomCodeForm"onsubmit="submitRoomCode(); return false;">
+				<form id="roomCodeForm" onsubmit="submitRoomCode(); return false;">
 					<div class="homeForm">
-						Room Code<br>
-						<input id="room_code" style="text-transform: uppercase;" maxlength="4" type="text" placeholder="Enter Room Code"/>
+						ROOM CODE
+						<input auto-focus class="button" id="room_code" style="text-transform: uppercase;" maxlength="4" type="text" placeholder="Room Code"/>
 					</div>
 					<div class="homeForm">
-						Name<br>
-						<input id="name" style="text-transform: uppercase;" maxlength="12"  type="text" placeholder="Enter Name"/>
+						NAME
+						<input class="button" id="name" style="text-transform: uppercase;" maxlength="12"  type="text" placeholder="Name"/>
 					</div>
-					<input type="submit" value="Play!"/>
+					<input class="button" type="submit" value="PLAY"/>
 				</form>
 				
-				<div id="createRoom" onclick="createRoom()">
+				<div class="button" id="createRoom" onclick="switchTO('roomCreation')">
 					Create Room
 				</div>
 			</div>
 		</div>
 		
+		<div id="roomCreation" class="full" style="display: none">
+			<div id="creation_setting" class="content">
+				<h3>Create Room</h3>
+				<form id="room_creation" onsubmit="createRoom(); return false;">
+					<div class="homeForm">
+						NAME
+						<input class="button" id="c_name" style="text-transform: uppercase;" maxlength="12"  type="text" placeholder="Name"/>
+					</div>
+					<input class="button" type="submit" value="CREATE ROOM"/>
+				</form>
+			</div>
+		</div>
+		
 		<div id="lobbyScreen" class="full" style="display: none">
 			<div id="lobbyContent" class="content">
-				<h2 id="ROOMCODE"></h2>
-				<div id="lobby"></div>
-				<div id="readyButton" onclick="readyButtonPress()">
+				<h2 id="ROOMCODE">GHDJ</h2>
+				<div id="lobby">
+					
+				</div>
+				<div id="readyButton" class="button" onclick="readyButtonPress()">
 					Ready
 				</div>
 			</div>
 		</div>
 		
 		<div id="play" class="full" style="display: none;">
-			<div id="canvasContainer">
-				<canvas id="canvas">Your Browser Does Not Support HTML5. Please Upgrade.</canvas>
-			</div>
-			
-			<div id="buttons">
-				<div id="canvasTextHolder" class="button"><p id="canvasText">Button A</p></div>
-				<div id="timer" class="button">10</div>
+			<div class="content">
+				<div id="canvasContainer"><canvas id="canvas">Your Browser Does Not Support HTML5. Please Upgrade.</canvas></div>
+				<div id="colours">
+						<div class="colour" style="background-color: black"></div>
+						<div class="colour" style="background-color: blue"></div>
+						<div class="colour" style="background-color: green"></div>
+						<div class="colour" style="background-color: yellow"></div>
+						<div class="colour" style="background-color: red"></div>
+					</div>
+				<div id="denoms">
+					<div id="canvasTextHolder" class="denom"><p id="canvasText">You Are aosis asoi asoi wowoqi Drawing A Banana</p></div>
+					<div id="timer" class="denom">10</div>
+				</div>
 			</div>
 		</div>
 		
+		<div id="final_drawings" class="full" style="display: none">
+			<div class="content">
+				<h4>Final Results</h4>
+				<h5>Banana</h5>
+				<div id="art_display">
+
+				</div>
+			</div>
+		</div>
+		
+		<div id="pop_up_outer" style="display: none">
+		<div id="pop_up_box">
+		<div class="pop_up" id="pop_up_submission" style="display: none">
+			<form id="guess_form" onsubmit="console.log(document.getElementById('guess').value); return false;">
+				Submit Your Guess:
+				<input id="guess" class="button" type="text" placeholder="Guess" maxlength="20"/>
+				<input class="button" type="submit" value="SUBMIT" onclick="closeAlert();"/>
+			</form>
+		</div>
+		<div class="pop_up" id="pop_up_alert" style="display: none">
+			<p id="alert_text">Your Name is Taken!</p>
+			<input class="button" type="submit" value="OK" onclick="closeAlert();"/>			
+		</div>
+		</div>
+		</div>
+		
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="/jquery-3.4.1.min.js"></script>
 		<script src="index.js"></script>
 	</body>
 </html>

@@ -12,8 +12,57 @@ var ctx = canvas.getContext("2d");
 var current = {
 	color: 'black'
 }
+
+var colours = document.getElementsByClassName('colour');
+for (var i = 0; i < colours.length; i++){
+	colours[i].addEventListener('click', onColorUpdate, false);
+}
+
+function onColorUpdate(e){
+	current.color = e.target.style.backgroundColor;
+}
+
 var drawable = false;
 var drawing = false;
+
+var currentTab = "home";
+
+window.onload = function(){
+	document.getElementById(currentTab).childNodes[1].style = "opacity: 1";
+}
+
+function Alert(message){
+	document.getElementById("alert_text").innerHTML = message;
+	document.getElementById("pop_up_alert").style = "display: intial";
+	document.getElementById("pop_up_outer").style = "display: intial";
+}
+
+function closeAlert(){
+	document.getElementById("pop_up_outer").style = "display: none";
+}
+
+function switchTO(name){
+	var curTab = document.getElementById(currentTab);
+	var newTab = document.getElementById(name);
+	
+	curTab.childNodes[1].style = "opacity: 0%";
+	newTab.style = "display: initial";
+	newTab.childNodes[1].style = "opacity: 0%";
+	setTimeout(function(){
+		curTab.style = "display: none";
+		newTab.childNodes[1].style = "opacity: 100%";
+	}, 500)
+	
+	currentTab = name;
+}
+
+function changeReady(player, r){
+	if(r){
+		document.getElementById('player_' + player).style = "background-color: #ffb214";
+	}else{
+		document.getElementById('player_' + player).style = "background-color: #a07114";
+	}
+}
 
 //https://github.com/socketio/socket.io/blob/master/examples/whiteboard/public/main.js
 canvas.addEventListener('mousedown', onMouseDown, false);
@@ -28,16 +77,17 @@ canvas.addEventListener('touchstart', onMouseDown, false);
 canvas.addEventListener('touchend', onMouseUp, false);
 canvas.addEventListener('touchcancel', onMouseUp, false);
 canvas.addEventListener('touchmove', throttle(onMouseMove, 1), false);
-//window.addEventListener('touchend', function(e){ drawing = false; }, false);
 
 function drawLine(x0, y0, x1, y1, color){
 	ctx.beginPath();
 	ctx.moveTo(x0, y0);
 	ctx.lineTo(x1, y1);
-	ctx.strokStyle = color;
+	ctx.strokeStyle = color;
 	ctx.lineWidth = 2;
 	ctx.stroke();
 	ctx.closePath();
+	
+	socket.emit('line', canvas.width, canvas.height, x0, y0, x1, y1, color);
 }
 
 function onMouseDown(e){
@@ -92,7 +142,7 @@ function throttle(callback, delay){ //limits events per second
 	};
 }
 
-function  getMousePos(canvas, evt) {
+function getMousePos(canvas, evt) {
 	var rect = canvas.getBoundingClientRect(), // abs. size of element
 	scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
 	scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
@@ -107,52 +157,57 @@ window.addEventListener('resize', onResize, false);
 
 // make the canvas fill its parent
 function onResize() {
+	if(drawable) return;
 	canvas.width = document.getElementById("canvasContainer").clientWidth;
 	canvas.height = document.getElementById("canvasContainer").clientHeight;
 }
 
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+$('input[type="text"]').blur(function() {
+  setTimeout(function() {
+    if (!$(document.activeElement).is('input[type="text"]')) {
+      $(window).scrollTop(0,0);
+    }
+  }, 0);
+});
+
+onResize();
+
 var me = null;
 var ready = false;
 var roomCode = null;
-var players = [];
-var readys = [];
 
 function createRoom(){
-	socket.emit("newRoom", prompt("Name:").toUpperCase());
+	var name = document.getElementById("c_name").value.toUpperCase()
+	if(name.length < 1) { Alert("Please Enter a Name"); return;}
+	
+	socket.emit("newRoom", name);
 }
 
 function submitRoomCode(){
 	var room_code = document.getElementById("room_code").value.toUpperCase();
 	var name = document.getElementById("name").value.toUpperCase();
 	
-	if(room_code.length != 4) { alert("Incorrect Room Code"); return; }	
-	if(name.length < 1) { alert("Please Enter a Name"); return;}
+	if(room_code.length != 4) { Alert("Incorrect Room Code"); return; }	
+	if(name.length < 1) { Alert("Please Enter a Name"); return;}
 	//other checks probably needed
 	
+	$(window).scrollTop(0,0);
 	socket.emit("joinRoom", room_code, name);
 }
 
 function readyButtonPress(){
 	ready = !ready;
 	if(ready){
-		document.getElementById("readyButton").style = "background-color: green";
+		document.getElementById('readyButton').style = "background-color: #666867";
 	}else{
-		document.getElementById("readyButton").style = "background-color: blue";
+		document.getElementById('readyButton').style = "background-color: intial";
 	}
 	
 	socket.emit("ready", ready);
 }
-
-function updateLobby(){
-	document.getElementById("lobby").innerHTML = "";
-	
-	for(i = 0; i < players.length; i++){
-		document.getElementById("lobby").innerHTML += "<div class='player' id='player_" + i + "' >" + players[i] + "</div>";
-		if(readys[i]) document.getElementById("player_" + i).style = "background-color: #FFA500";
-		else document.getElementById("player_" + i).style = "";
-	}
-}
-
 
 var timer;
 function startTimer(time){
@@ -196,56 +251,63 @@ function drawImage(img){
 }
 
 
-socket.on("successful_connection", function(roomCode_, players_, readys_, me_){
+socket.on("successful_connection", function(roomCode_, players, readys, me_){
 	me = me_;
 	roomCode = roomCode_;
-	players = players_;
-	readys = readys_;
 	
 	document.getElementById("ROOMCODE").innerHTML = roomCode;
-	updateLobby();
+	document.getElementById("lobby").innerHTML = "";
 	
-	document.getElementById("home").style = "display: none";
-	document.getElementById("lobbyScreen").style = "display: initial";
+	for(i = 0; i < players.length; i++){
+		document.getElementById("lobby").innerHTML += "<div class='player' id='player_" + players[i] + "' >" + players[i] + "</div>";
+		changeReady(players[i], readys[i]);
+	}
+	
+	switchTO('lobbyScreen');
 });
 
 socket.on("unsuccessful_connection", function(e){
-	alert(e);
+	switch(e){
+		case 'not_exist':
+			Alert("Room Does Not Exist");
+			break;
+		case 'game_in_play':
+			Alert("The Game Has Already Started!");
+			break;
+		case 'incorrect_name':
+			Alert("Incorrect Name");
+			break;
+		case 'name_taken':
+			Alert("Name Taken!");
+			break;
+	}
 });
 
 socket.on("addPlayer", function(name){
-	players.push(name);
-	updateLobby();
+	document.getElementById("lobby").innerHTML += "<div class='player' id='player_" + name + "' >" + name + "</div>";
 });
 
-socket.on("removePlayer", function(name){
-	index = players.indexOf(name);
-	if(index > -1){
-		players.splice(index, 1);
-	}
-	updateLobby();
+socket.on("removePlayer", function(name){ 
+//TODO
+
 });
 
 socket.on("ready", function(player_name, ready_){
-	var player = players.indexOf(player_name);
-	if(player < 0) return false;
-	readys[player] = ready_;
-	updateLobby();
+	changeReady(player_name, ready_);
 });
 
 socket.on("start", function(){
-	document.getElementById("lobbyScreen").style = "display: none";	
-	document.getElementById("play").style = "display: initial";
+	switchTO("play");
+	document.getElementById("canvasText").innerHTML = "Get Ready!";
 	onResize();
 });
 
 socket.on("drawingTask", function(task){
-	document.getElementById("canvasText").innerHTML = "You Are Drawing A:" + task;
+	document.getElementById("canvasText").innerHTML = "You Are Drawing A: " + task;
 });
 
 socket.on("draw", function(player_name){
-	var player = players.indexOf(player_name);
-	if(player < 0) return false;
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	if(player_name == me) {
 		document.getElementById("canvasText").innerHTML = "Try to replicate what you saw!";
 		drawable = true;
@@ -262,9 +324,7 @@ socket.on('requestDrawing', function(){
 });
 
 socket.on('drawing', function(drawing, player_name){
-	var player = players.indexOf(player_name);
-	if(player < 0) return false;
-	document.getElementById("canvasText").innerHTML = players[player] + "'s Drawing!";
+	document.getElementById("canvasText").innerHTML = player_name + "'s Drawing!";
 	var img = new Image();
 	img.src = drawing;
 	img.onload = function(){
@@ -273,35 +333,44 @@ socket.on('drawing', function(drawing, player_name){
 	startTimer(VIEW_TIME);
 });
 
+socket.on('line', function(width, height, x0, y0, x1, y1, color){
+	var img_asp = width / height;
+	var canvas_asp = canvas.width / canvas.height;
+	var dx = x1 - x0;
+	var dy = y1 - y0;
+	var n_x0, n_y0, n_x1, n_y1;
+	
+	if(img_asp < canvas_asp){
+		n_y0 = y0 * (canvas.height / height);
+		n_y1 = n_y0 + dy * (canvas.height / height);
+		n_x0 = (canvas.width + x0*(canvas.height / height) - width) / 2;
+		n_x1 = n_x0 + dx * (canvas.height / height);
+	}else if(img_asp > canvas_asp){
+		n_y0 = (canvas.height + y0*(canvas.width / width) - height) / 2;
+		n_y1 = n_y0 + dy * (canvas.width / width);
+		n_x0 = x0 * (canvas.width / width);
+		n_x1 = n_x0 + dx * (canvas.width / width)
+	}else{
+		n_x0 = x0 * canvas.height/height;
+		n_x1 = n_x0 + dx * canvas.height/height;
+		n_y0 = y0 * canvas.height/height;
+		n_y1 = n_y0 + dy * canvas.height/height;
+	}
+	
+	drawLine(n_x0, n_y0, n_x1, n_y1, color);
+});
+
 socket.on("stopLooking", function(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 socket.on('final_drawings', function(drawings, task){
-	//drawings.reverse(); //show in reverse order
-	var imgs = [];
+	document.getElementById("art_display").innerHTML = "";
+	switchTO("final_drawings");
+	
 	for(var i = 0; i < drawings.length; i++){
-		imgs[i] = new Image();
-		imgs[i].src = drawings[i].art;
-	}
-		
-	//Assume last image in array is last to load (bad, improve later)
-	imgs[imgs.length - 1].onload = function(){
-		//Display all images
-		var img = 0;
-		drawImage(imgs[img]);
-		document.getElementById("canvasText").innerHTML = drawings[img].artist + "'s Art!";
-		var display_timer = setInterval(function(){
-			img++;
-			if(img >= imgs.length) {
-				clearInterval(display_timer);
-				document.getElementById("canvasText").innerHTML = "The original drawing was meant to be: " + task;
-				return;
-			}
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			drawImage(imgs[img]);
-			document.getElementById("canvasText").innerHTML = drawings[img].artist + "'s Art!";
-		}, VIEW_TIME);
+		document.getElementById("art_display").innerHTML += '<div class="art"><img id="art_' + i + '" class="art_img"/><p>' + drawings[i].artist + '</p></div>';
+		document.getElementById("art_" + i).src = drawings[i].art;
 	}
 });
 
