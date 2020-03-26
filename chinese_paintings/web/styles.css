@@ -6,6 +6,13 @@
 	overflow: hidden; /*  Disable scrollbars */
 	display: block;  /* No floating content on sides */
 	-ms-overflow-style: none;	
+	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }
 
 ::selection {
@@ -46,7 +53,9 @@
 	min-height: 100vh;
 	margin: 0px;
 	overflow: auto;
+	opacity: 0;
 }
+
 
 .content{
     overflow: hidden;
@@ -60,7 +69,7 @@
 	height: 98%;
 	text-align: center;
 	font-family: 'Candara';
-	opacity: 0;
+	opacity: inherit;
 	transition: opacity 0.5s;
 	transition-timing-function: ease-in;
 }
@@ -200,6 +209,7 @@ input[type=submit]:active{
     display: inline-block;
     vertical-align: middle;
     line-height: normal;
+	text-transform: capitalize;
 }
 
 h2{
@@ -343,8 +353,8 @@ h5{
 
 #art_display{
 	background-color: #000;
-	height: 70vh;
-	height: calc(var(--vh, 1vh) * 70);
+	height: 65vh;
+	height: calc(var(--vh, 1vh) * 65);
 	width: calc(100% - 1vh);
 	width: calc(100% - var(--vh, 1vh) * 1);
 	overflow-x: scroll;
@@ -375,5 +385,12 @@ h5{
 	height: calc(100% - 8vh);
 	height: calc(100% - var(--vh, 1vh) * 8);
 	width: 100%;
+}
+
+#return_lobby{
+	margin: 1vh;
+	margin: calc(var(--vh, 1vh) * 1);
+	font-size: 5vh;
+	font-size: calc(var(--vh, 1vh) * 5);
 }
 

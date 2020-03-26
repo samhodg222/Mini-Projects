@@ -1,49 +1,52 @@
 /*
 TODO
+	Clean Up Code
+		Use seperate file for actual game function
+
 	Bug Fixing:
 		-find bugs
 		
 	Features:
-		*General*
-		-more drawings
-			potentially 'scene action person' thing, maybe a mix
-			will definitelybe a csv online with a free list, will
-			have to make csv import (not too much work)	
-			
 		*Big Changes*
-			-Live stream to previous users *ALMOST THERE* (potentially don't worry about scaling, or don't be lazy)
-				pretty simple to do, just figuring out who can see it
-				also design something for players that have nothing to see.
-				
-			-add guessing along the way (use for label, better than 'Art') *NOT SURE ABOUT THIS*
-				Implemented to some extend but not sure if good feature
-		
+			-Live stream to previous users *Not Fast Enough*
+
 	Extra Features:
 		-Fix room generation to avoid overproduction of rooms
 			simply more options, and maybe some ddos protection, or at
 			least stop one client or ip(if poss) making multiple rooms
-		-replay room (maybe, no problem if just refresh for now)
-			possibly not necessary, depends how long games end up being, 
-			and if it makes sense
-		-compress images (or not even have them in image form?)
+		-compress images 
+			or not even have them in image form?
+			Only if becomes an issue
 */
 
-
-var app = require("express")();
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
+const app = require("express")();
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+const csv = require('csv-parser');
+const fs = require('fs');
 
 const PORT = 3000;
 
 var rooms = [];
+var tasks = [];
+
 const MAX_LOBBIES = 26*26*26*26; //456976 (limited by number of room codes, most likely limited by server capabilities)
-const DRAW_TIME = 10*1000; //10 seconds to draw
+const DRAW_TIME = 15*1000; //15 seconds to draw
 const VIEW_TIME =  3*1000; //3 seconds to view
+
+fs.createReadStream('words.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    tasks.push(row.word);
+  })
+  .on('end', () => {
+    console.log('Words Successfully Loaded');
+  });
 
 //Functions
 function randomDrawing(){//TODO
-	//function that returns random drawing task
-	return "banana";
+	var r = Math.floor(Math.random() * tasks.length);
+	return tasks[r];
 }
 
 //Room Management
@@ -87,12 +90,6 @@ function joinRoom(roomCode, name, socket){
 		return;
 	}
 	
-	//check if room is in lobby mode
-	if(rooms[room].state != "lobby"){
-		io.to(socket.id).emit("unsuccessful_connection", "game_in_play");
-		return;
-	}
-	
 	//check name
 	if(check_name(name)) {
 		io.to(socket.id).emit("unsuccessful_connection", "incorrect_name");
@@ -101,6 +98,7 @@ function joinRoom(roomCode, name, socket){
 	
 	var relogin = false;
 	for(var i = 0; i < rooms[room].players.length; i++){
+		if(rooms[room].players[i] == undefined) continue;
 		if(rooms[room].players[i].name == name && rooms[room].players[i].connected){
 			io.to(socket.id).emit("unsuccessful_connection", "name_taken");
 			return;
@@ -112,25 +110,33 @@ function joinRoom(roomCode, name, socket){
 		}
 	}
 	
+	//check if room is in lobby mode
+	if(rooms[room].state != "lobby" && !relogin){
+		io.to(socket.id).emit("unsuccessful_connection", "game_in_play");
+		return;
+	}
+	
 	if(!relogin) rooms[room].players.push({name: name, id: socket.id, ready: false, connected: true});
 	socket.join(roomCode);
 			
 	var player_names = [];
 	var readys = [];
 	for(var i = 0; i < rooms[room].players.length; i++){
+		if(rooms[room].players[i] == undefined) continue;
 		player_names.push(rooms[room].players[i].name);
 		readys.push(rooms[room].players[i].ready);
 	}
 	
 	io.to(socket.id).emit("successful_connection", roomCode, player_names, readys, name);
 	
-	socket.broadcast.to(roomCode).emit("addPlayer", name);
+	if(!relogin) socket.broadcast.to(roomCode).emit("addPlayer", name);
 }
 
 function findPlayerFromID(id){ //returns in form [room, player]
 	for(var i = 0; i < rooms.length; i++){
 		if(rooms[i] == undefined) continue;
 		for(var j = 0; j < rooms[i].players.length; j++){
+			if(rooms[i].players[j] == undefined) continue;
 			if(rooms[i].players[j].id == id) return [i, j];
 		}
 	}
@@ -161,7 +167,10 @@ function startRoom(room){
 	
 	
 	rooms[room].state = 0;
-	player = rooms[room].queue[rooms[room].state]
+	
+	while(!rooms[room].players[rooms[room].queue[rooms[room].state]].connected) rooms[room].state++;
+	
+	var player = rooms[room].queue[rooms[room].state]
 	
 	setTimeout(function(){
 		io.to(generateRoomCode(room)).emit("draw", rooms[room].players[player].name);
@@ -190,9 +199,15 @@ function finishedDrawing(room, player, drawing){
 	
 	//Check if there is another player
 	if(rooms[room].state + next < rooms[room].players.length){
-		//Send previous drawing to next active player in queue	
+		//Send previous drawing to next active player in queue and all previous players
 		var nextPlayer = rooms[room].queue[rooms[room].state + next];
-					
+		
+		for(var i = 0; i < rooms[room].state; i++){
+			var player_ = rooms[room].queue[i];
+			if(rooms[room].players[player_] == undefined) continue;
+			io.to(rooms[room].players[player_].id).emit("drawing", drawing, rooms[room].players[player].name);
+		}
+		
 		io.to(rooms[room].players[nextPlayer].id).emit("drawing", drawing, rooms[room].players[player].name);
 		setTimeout(function(){
 			//after VIEW_TIME clear clients canvas
@@ -201,9 +216,14 @@ function finishedDrawing(room, player, drawing){
 		}, VIEW_TIME);
 	}else{
 		//Finished Game
-		rooms[room].state = "end";
-		startRoomTimeout(room);
 		io.to(generateRoomCode(room)).emit("final_drawings", rooms[room].drawings, rooms[room].drawing);
+
+		rooms[room].state = "lobby";
+		rooms[room].drawings = [];
+		rooms[room].queue = [];
+		rooms[room].drawing = randomDrawing();
+		
+		for(var i = 0; i < rooms[room].players.length; i++) rooms[room].players[i].ready = false;
 	}
 }
 
@@ -288,6 +308,28 @@ function startEmptyRoomTimeout(room){ //if a lobby is empty for more than 30 sec
 	}, 30*1000);
 }
 
+function kickPlayerTimeout(room, player){
+	if(rooms[room] == undefined) return;
+	if(rooms[room].players[player] == undefined) return;
+	if(rooms[room].players[player].connected) return;
+	
+	setTimeout(function(){
+		if(!rooms[room].players[player].connected && rooms[room].state == "lobby") {
+			rooms[room].players.splice(player, 1);
+			
+			var player_names = [];
+			var readys = [];
+			for(var i = 0; i < rooms[room].players.length; i++){
+				if(rooms[room].players[i] == undefined) continue;
+				player_names.push(rooms[room].players[i].name);
+				readys.push(rooms[room].players[i].ready);
+			}
+			
+			io.to(generateRoomCode(room)).emit("update_lobby", player_names, readys);
+		}
+	}, 10*1000);
+}
+
 function deleteRoom(room){
 	var roomCode = generateRoomCode(room);
 	io.of('/').in(roomCode).clients((error, socketIds) => {
@@ -357,7 +399,7 @@ io.on('connection', function(socket){
 		if(checkReady(room)) startRoom(room);
 	});
 	
-	socket.on('line', function(width, height, x0, y0, x1, y1, color){
+	socket.on('line', function(x0, y0, x1, y1, color){
 		var [room, player] = findPlayerFromID(socket.id);
 		if(room < 0 || player < 0) return;
 		
@@ -365,7 +407,7 @@ io.on('connection', function(socket){
 		
 		for(var i = 0; i < rooms[room].state; i++){
 			var player_ = rooms[room].queue[i];
-			io.to(rooms[room].players[player_].id).emit("line", width, height, x0, y0, x1, y1, color);
+			io.to(rooms[room].players[player_].id).emit("line", x0, y0, x1, y1, color); //consider skew later
 		}
 	});
 	
@@ -390,6 +432,7 @@ io.on('connection', function(socket){
 				if(rooms[i].players[j].id === socket.id) {
 					removePlayer(i, j);
 					if(getRoomSize(i) < 1) startEmptyRoomTimeout(i);
+					kickPlayerTimeout(i, j);
 					break;
 				}
 				
@@ -401,7 +444,7 @@ io.on('connection', function(socket){
 var alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 //HTTP set up
-http.listen(PORT, '192.168.0.16', function(){
+http.listen(PORT, '192.168.0.2', function(){
 	console.log("listening on *:" + PORT);
 });
 
@@ -425,5 +468,6 @@ app.get("/jquery-3.4.1.min.js", function(req, res){
 	REMOVE WHEN FINISHED
 */
 app.get("/print", function(req, res){
-	res.send(rooms);
+	res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(rooms, null, '\t'));
 });

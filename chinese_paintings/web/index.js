@@ -1,7 +1,7 @@
 //index.js
 //client side javascript
 
-const DRAW_TIME = 10*1000; //10 seconds to draw
+const DRAW_TIME = 15*1000; //15 seconds to draw
 const VIEW_TIME =  3*1000; //3 seconds to view
 
 var socket = io();
@@ -28,7 +28,7 @@ var drawing = false;
 var currentTab = "home";
 
 window.onload = function(){
-	document.getElementById(currentTab).childNodes[1].style = "opacity: 1";
+	document.getElementById(currentTab).style = "opacity: 1";
 }
 
 function Alert(message){
@@ -45,13 +45,14 @@ function switchTO(name){
 	var curTab = document.getElementById(currentTab);
 	var newTab = document.getElementById(name);
 	
-	curTab.childNodes[1].style = "opacity: 0%";
+	$(window).scrollTop(0,0);
+	
+	curTab.style = "display: none";
 	newTab.style = "display: initial";
-	newTab.childNodes[1].style = "opacity: 0%";
+	newTab.style = "opacity: 0";
 	setTimeout(function(){
-		curTab.style = "display: none";
-		newTab.childNodes[1].style = "opacity: 100%";
-	}, 500)
+		newTab.style = "opacity: 1";
+	}, 50)
 	
 	currentTab = name;
 }
@@ -87,7 +88,7 @@ function drawLine(x0, y0, x1, y1, color){
 	ctx.stroke();
 	ctx.closePath();
 	
-	socket.emit('line', canvas.width, canvas.height, x0, y0, x1, y1, color);
+	//socket.emit('line', x0/canvas.width, y0/canvas.height, x1/canvas.width, y1/canvas.height, color);
 }
 
 function onMouseDown(e){
@@ -209,6 +210,10 @@ function readyButtonPress(){
 	socket.emit("ready", ready);
 }
 
+function return_to_lobby(){
+	switchTO("lobbyScreen");
+}
+
 var timer;
 function startTimer(time){
 	clearInterval(timer);
@@ -266,6 +271,15 @@ socket.on("successful_connection", function(roomCode_, players, readys, me_){
 	switchTO('lobbyScreen');
 });
 
+socket.on('update_lobby', function(players, readys){
+	document.getElementById("lobby").innerHTML = "";
+	
+	for(i = 0; i < players.length; i++){
+		document.getElementById("lobby").innerHTML += "<div class='player' id='player_" + players[i] + "' >" + players[i] + "</div>";
+		changeReady(players[i], readys[i]);
+	}
+});
+
 socket.on("unsuccessful_connection", function(e){
 	switch(e){
 		case 'not_exist':
@@ -303,7 +317,7 @@ socket.on("start", function(){
 });
 
 socket.on("drawingTask", function(task){
-	document.getElementById("canvasText").innerHTML = "You Are Drawing A: " + task;
+	document.getElementById("canvasText").innerHTML = "You Are Drawing: " + task;
 });
 
 socket.on("draw", function(player_name){
@@ -320,7 +334,7 @@ socket.on('requestDrawing', function(){
 	drawable = false;
 	document.getElementById("canvasText").innerHTML = "Times Up!";
 	socket.emit('finishedDrawing', canvas.toDataURL());
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	//ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 socket.on('drawing', function(drawing, player_name){
@@ -333,38 +347,18 @@ socket.on('drawing', function(drawing, player_name){
 	startTimer(VIEW_TIME);
 });
 
-socket.on('line', function(width, height, x0, y0, x1, y1, color){
-	var img_asp = width / height;
-	var canvas_asp = canvas.width / canvas.height;
-	var dx = x1 - x0;
-	var dy = y1 - y0;
-	var n_x0, n_y0, n_x1, n_y1;
-	
-	if(img_asp < canvas_asp){
-		n_y0 = y0 * (canvas.height / height);
-		n_y1 = n_y0 + dy * (canvas.height / height);
-		n_x0 = (canvas.width + x0*(canvas.height / height) - width) / 2;
-		n_x1 = n_x0 + dx * (canvas.height / height);
-	}else if(img_asp > canvas_asp){
-		n_y0 = (canvas.height + y0*(canvas.width / width) - height) / 2;
-		n_y1 = n_y0 + dy * (canvas.width / width);
-		n_x0 = x0 * (canvas.width / width);
-		n_x1 = n_x0 + dx * (canvas.width / width)
-	}else{
-		n_x0 = x0 * canvas.height/height;
-		n_x1 = n_x0 + dx * canvas.height/height;
-		n_y0 = y0 * canvas.height/height;
-		n_y1 = n_y0 + dy * canvas.height/height;
-	}
-	
-	drawLine(n_x0, n_y0, n_x1, n_y1, color);
+/*
+socket.on('line', function(x0, y0, x1, y1, color){
+	drawLine(x0*canvas.width, y0*canvas.height, x1*canvas.width, y1*canvas.height, color);
 });
+*/
 
 socket.on("stopLooking", function(){
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
 
 socket.on('final_drawings', function(drawings, task){
+	document.getElementById("task").innerHTML = task;
 	document.getElementById("art_display").innerHTML = "";
 	switchTO("final_drawings");
 	
@@ -372,6 +366,12 @@ socket.on('final_drawings', function(drawings, task){
 		document.getElementById("art_display").innerHTML += '<div class="art"><img id="art_' + i + '" class="art_img"/><p>' + drawings[i].artist + '</p></div>';
 		document.getElementById("art_" + i).src = drawings[i].art;
 	}
+	
+	var players = document.getElementsByClassName('player');
+	for(player of players) player.style = "";
+	ready = false;
+	document.getElementById('readyButton').style = "background-color: intial";
+	document.getElementById('timer').innerHTML = "15";
 });
 
 socket.on("log", function(message){
